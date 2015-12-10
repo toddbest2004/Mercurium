@@ -6,6 +6,7 @@ var app = express()
 
 app.use(express.static(path + '/static'))
 
+
 var gameCtrl = require("./controllers/game")
 app.use("/game", gameCtrl)
 
