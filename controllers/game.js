@@ -10,8 +10,18 @@ router.get("/", function(req,res){
 			// addCharacter(character, game)
 			// game.characters[0].movements=10
 			console.log(characterMove(game.characters[0],3,-1))
+			game.map=[{x:3, y:0, texture:1},
+				{x:1, y:0, texture:1},
+				{x:2, y:0, texture:2},
+				{x:0, y:1, texture:2},
+				{x:1, y:1, texture:1},
+				{x:2, y:1, texture:1},
+				{x:3, y:1, texture:2},
+				{x:0, y:2, texture:2},
+				{x:1, y:2, texture:1},
+				{x:2, y:2, texture:1}]
 			game.save()
-			res.send(getDistance(2,2,-2,-2)+"")
+			res.send(game)
 		// })
 	// 	// db.character.findOne({}).then(function(character){
 	// 		game.characters[0].location.x=2
@@ -52,7 +62,8 @@ function characterMove(character,x,y){//does not yet test for occupied space.
 	}
 }
 
-function attack(direction){
+function attack(character, x, y){
+	var z = getZ(x,y)
 
 }
 

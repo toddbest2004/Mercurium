@@ -4,11 +4,13 @@ var path = require('path')
 
 var app = express()
 
-app.use(express.static(path + '/static'))
-
+app.use(express.static(path.join(__dirname, 'public')))
 
 var gameCtrl = require("./controllers/game")
 app.use("/game", gameCtrl)
+app.get('/*', function(req,res){
+	res.sendFile(path.join(__dirname, 'public/index.html'))
+})
 
 var port = process.env.PORT || 3000
 var serverip = process.env.IP || "localhost"

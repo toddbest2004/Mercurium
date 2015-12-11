@@ -1,0 +1,6 @@
+<div ng-controller="GameCtrl">
+<svg width="400" height="400">
+	<image xlink:href="{{getImage(tile)}}" x="{{getTileX(tile)}}" y="{{getTileY(tile)}}" height="100px" width="100px" ng-repeat="tile in game.map" ng-click="click(tile)" ng-mouseenter="hoverIn(tile)" ng-mouseleave="hoverOut(tile)">
+	<!-- <image xlink:href="images/tile.png" x="{{getTileX(tile.x)}}" y="{{tile.y}}" height="100px" width="100px" ng-repeat="tile in game.selected" ng-click="changeX(tile)"> -->
+</svg>
+</div>
