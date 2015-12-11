@@ -1,6 +1,10 @@
 <div ng-controller="GameCtrl">
-<svg width="1200" height="800">
-	<image xlink:href="{{getImage(tile)}}" x="{{getTileX(tile)}}" y="{{getTileY(tile)}}" height="100px" width="100px" ng-repeat="tile in game.map" ng-click="click(tile)" ng-mouseenter="hoverIn(tile)" ng-mouseleave="hoverOut(tile)"></image>
-	<image xlink:href="images/highlight.png" x="{{getTileX(character.location)}}" y="{{getTileY(character.location)}}" height="100px" width="100px" ng-repeat="character in game.characters" class="noMouse"></image>
+<svg width="976" height="820" style="float: left;">
+	<rect width="100%" height="100%" fill="black"></rect>
+	<image xlink:href="{{getImage(tile)}}" x="{{getTileX(tile)}}" y="{{getTileY(tile)}}" height="100px" width="100px" ng-repeat="tile in game.map" ng-click="click(tile)" ng-mouseenter="hoverIn(tile)" ng-mouseleave="hoverOut(tile)" ng-right-click="rightClick(tile)"></image>
+	<image xlink:href="images/highlight.png" x="{{getTileX(character.location)}}" y="{{getTileY(character.location)}}" height="100px" width="100px" ng-repeat="character in game.characters" pointer-events="none"></image>
 </svg>
+<div style="float:left;">
+{{characterData}}
+</div>
 </div>

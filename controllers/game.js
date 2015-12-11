@@ -12,8 +12,8 @@ router.get("/", function(req,res){
 			console.log(characterMove(game.characters[0],3, 1))
 			// game.map=[]
 			// for(var i=0; i<10;i++){
-			// 	for(var j=0; j<10; j++){
-			// 		game.map.push({x:i, y:j, texture:Math.floor((Math.random() * 2) + 1)})
+			// 	for(var j=0-parseInt(i/2); j<10-parseInt(i/2); j++){
+			// 		game.map.push({x:j, y:i, texture:Math.floor((Math.random() * 2) + 1)})
 			// 	}
 			// }
 			game.save()
