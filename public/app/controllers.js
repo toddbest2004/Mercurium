@@ -13,11 +13,14 @@ angular.module('GameCtrls', [])
     }
     $http(req).then(function success(res) {
       $scope.game = res.data
+      console.log($scope.game.characters)
     }, function error(res) {
       console.log(res)
     });
   }
   $scope.click = function(tile){
+      console.log(tile.x)
+      console.log($scope.game.characters[0])
     $scope.clearSelected()
     tile.selected=!tile.selected
   }

@@ -9,17 +9,13 @@ router.get("/", function(req,res){
 		// db.character.findOne().then(function(character){
 			// addCharacter(character, game)
 			// game.characters[0].movements=10
-			console.log(characterMove(game.characters[0],3,-1))
-			game.map=[{x:3, y:0, texture:1},
-				{x:1, y:0, texture:1},
-				{x:2, y:0, texture:2},
-				{x:0, y:1, texture:2},
-				{x:1, y:1, texture:1},
-				{x:2, y:1, texture:1},
-				{x:3, y:1, texture:2},
-				{x:0, y:2, texture:2},
-				{x:1, y:2, texture:1},
-				{x:2, y:2, texture:1}]
+			console.log(characterMove(game.characters[0],3, 1))
+			// game.map=[]
+			// for(var i=0; i<10;i++){
+			// 	for(var j=0; j<10; j++){
+			// 		game.map.push({x:i, y:j, texture:Math.floor((Math.random() * 2) + 1)})
+			// 	}
+			// }
 			game.save()
 			res.send(game)
 		// })
