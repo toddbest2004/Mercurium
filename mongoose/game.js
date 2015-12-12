@@ -3,13 +3,10 @@ var Schema = mongoose.Schema
 
 var gameSchema = new Schema({
 	characters: [{type: Schema.Types.ObjectId, ref: 'character'}],
-	map: [{
-		x: Number,
-		y: Number,
-		texture: Number,
-		height: Number,
-		passable: Boolean
-	}]
+	map: [{type: Schema.Types.ObjectId, ref: 'tile'}],
+	round: Number,
+	turnOrder: [Number],
+	turn: Number
 
 })
 

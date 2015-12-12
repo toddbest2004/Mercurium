@@ -3,7 +3,7 @@ var Schema = mongoose.Schema
 
 var characterSchema = new Schema({
 	user: {type: Schema.Types.ObjectId, ref: 'User'},
-	location: {x:Number,y:Number,z:Number},
+	location: {x:Number,y:Number},
 	movements: Number,
 	name: String,
 	characterClass: String,

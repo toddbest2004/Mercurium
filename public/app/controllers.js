@@ -4,6 +4,7 @@ angular.module('GameCtrls', [])
 
   $scope.game = {}
   $scope.move = {}
+  $scope.currentCharacter = {}
   $scope.characterData = "Test"
 
   var getGame = function(){
@@ -15,6 +16,8 @@ angular.module('GameCtrls', [])
     }
     $http(req).then(function success(res) {
       $scope.game = res.data
+      $scope.gameData = JSON.stringify(res.data)
+      // $scope.currentCharacter = $scope.game.turnOrder[$scope.game.turn]
     }, function error(res) {
       console.log(res)
     });

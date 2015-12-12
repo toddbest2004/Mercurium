@@ -5,20 +5,27 @@ var db = require('./../mongoose')
 
 router.get("/", function(req,res){
 	// createGame()
-	db.game.findOne({}).populate('characters').exec(function(err, game){
-		// db.character.findOne().then(function(character){
+	db.game.findOne({}).populate('characters').populate('map').exec(function(err, game){
+		db.character.findOne().then(function(character){
 			// addCharacter(character, game)
 			// game.characters[0].movements=10
-			console.log(characterMove(game.characters[0],3, 1))
+			// console.log(characterMove(game.characters[0],3, 1))
 			// game.map=[]
 			// for(var i=0; i<10;i++){
 			// 	for(var j=0-parseInt(i/2); j<10-parseInt(i/2); j++){
-			// 		game.map.push({x:j, y:i, texture:Math.floor((Math.random() * 2) + 1)})
+			// 		createTile(j,i,game)
 			// 	}
 			// }
+			// character.location = {x:1, y:1}
+			// character.movements = 10
+			// game.turnOrder[0]=character
+			db.game.find({'map.x':1, 'map.y':1}, function(err, tile){
+				console.log(tile.x, tile.y)
+			})
+			// game.map()
 			game.save()
 			res.send(game)
-		// })
+		})
 	// 	// db.character.findOne({}).then(function(character){
 	// 		game.characters[0].location.x=2
 	// 		game.save()
@@ -33,6 +40,12 @@ function createGame(options){
 	})
 }
 
+function createTile(x, y, game){
+	db.tile.create({x:x, y:y, texture:Math.floor((Math.random() * 2) + 1)}, function(err, tile){
+		game.map.push(tile)
+	})
+}
+
 function addExistingCharacterToGame(character, game){
 	game.characters.push(character)
 	game.save().then(function(game){
@@ -44,7 +57,11 @@ function addNewCharacterToGame(game){
 
 }
 
-function characterMove(character,x,y){//does not yet test for occupied space.
+function characterMove(character,x,y){
+//does not yet test for occupied space.
+//right now character location is not normalized
+//make sure character location gets updated both in map tile occupiedBy
+//and character.location.
 	var z = getZ(x,y)
 	var distance = getDistance(character.location.x,character.location.y,x,y)
 	console.log(distance, character.movements)
