@@ -5,23 +5,29 @@ var db = require('./../mongoose')
 
 router.get("/", function(req,res){
 	// createGame()
-	db.game.findOne({}).populate('characters').populate('map').exec(function(err, game){
+	db.game.findOne({}).populate('characters').exec(function(err, game){
 		db.character.findOne().then(function(character){
 			// addCharacter(character, game)
 			// game.characters[0].movements=10
 			// console.log(characterMove(game.characters[0],3, 1))
-			// game.map=[]
-			// for(var i=0; i<10;i++){
-			// 	for(var j=0-parseInt(i/2); j<10-parseInt(i/2); j++){
-			// 		createTile(j,i,game)
-			// 	}
-			// }
+			game.map=[]
+			game.length = 10
+			game.height = 11 //actual height will be one less
+			for(var y=0; y<game.height;y++){
+				for(var x=0; x<parseInt(game.length+game.height/2); x++){
+					if(y+x*2>game.height&&y+2*x<game.length*2+game.height){
+						game.map.push({x:x, y:y, texture:Math.floor((Math.random() * 2) + 1)})
+					}else{
+						game.map.push(null)
+					}
+				}
+			}
 			// character.location = {x:1, y:1}
 			// character.movements = 10
 			// game.turnOrder[0]=character
-			db.game.find({'map.x':1, 'map.y':1}, function(err, tile){
-				console.log(tile.x, tile.y)
-			})
+			// db.game.find({'map.x':1, 'map.y':1}, function(err, tile){
+			// 	console.log(tile.x, tile.y)
+			// })
 			// game.map()
 			game.save()
 			res.send(game)

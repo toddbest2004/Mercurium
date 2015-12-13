@@ -3,7 +3,9 @@ var Schema = mongoose.Schema
 
 var gameSchema = new Schema({
 	characters: [{type: Schema.Types.ObjectId, ref: 'character'}],
-	map: [{type: Schema.Types.ObjectId, ref: 'tile'}],
+	length: Number,
+	height: Number,
+	map: [{x:Number, y:Number, texture:Number}],
 	round: Number,
 	turnOrder: [Number],
 	turn: Number

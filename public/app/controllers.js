@@ -1,7 +1,6 @@
 angular.module('GameCtrls', [])
 .controller('GameCtrl', ['$scope', '$http', function($scope, $http) {
   var textures = ['highlight.png','sand.png', 'grass.png']
-
   $scope.game = {}
   $scope.move = {}
   $scope.currentCharacter = {}
@@ -25,6 +24,9 @@ angular.module('GameCtrls', [])
   var sendMove = function(){
 
   }
+  function getMapIndex(x, y){
+    return x+y*$scope.game.height
+  }
   function getDistance(x1,y1,x2,y2){
     var z1 = -(x1+y1)
     var z2 = -(x2+y2)
@@ -32,6 +34,7 @@ angular.module('GameCtrls', [])
     return distance
   }
   $scope.click = function(tile){
+    console.log(tile.x, tile.y)
     $scope.clearSelected()
     tile.selected=true
     if(tile.occupied){
@@ -52,8 +55,6 @@ angular.module('GameCtrls', [])
   $scope.hoverOut = function(tile){
   }
 
-  $scope.paths = [{x:1}, {x:2}]
-
   $scope.getImage = function(tile){
     if(tile.selected){
       return 'images/'+textures[0]
@@ -71,10 +72,10 @@ angular.module('GameCtrls', [])
   }
   $scope.getTileX = function(tile){
     var x = tile.x+tile.y/2
-    return x*92
+    return x*92-($scope.game.height-$scope.game.length/2)*92
   }
   $scope.getTileY = function(tile){
-    return tile.y*80
+    return tile.y*80-80
   }
 
   getGame()
