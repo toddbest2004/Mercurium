@@ -7,7 +7,7 @@ var gameSchema = new Schema({
 	height: Number,
 	map: [{x:Number, y:Number, texture:Number}],
 	round: Number,
-	turnOrder: [Number],
+	turnOrder: [{type: Schema.Types.ObjectId, ref: 'character'}],
 	turn: Number
 
 })

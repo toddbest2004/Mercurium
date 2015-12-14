@@ -5,14 +5,17 @@ var db = require('./../mongoose')
 
 router.get("/", function(req,res){
 	// createGame()
-	db.game.findOne({}).populate('characters').exec(function(err, game){
-		db.character.findOne().then(function(character){
-			// addCharacter(character, game)
+	db.game.findOne({}).populate('characters').populate('turnOrder').exec(function(err, game){
+		db.character.findOne({name:"test"}).then(function(character){
+			// character.save()
+		// 	addExistingCharacterToGame(character, game)
 			// game.characters[0].movements=10
 			// console.log(characterMove(game.characters[0],3, 1))
 			game.map=[]
 			game.length = 10
 			game.height = 11 //actual height will be one less
+			game.round = 0
+			game.turn = 1
 			for(var y=0; y<game.height;y++){
 				for(var x=0; x<parseInt(game.length+game.height/2); x++){
 					if(y+x*2>game.height&&y+2*x<game.length*2+game.height){
@@ -22,12 +25,9 @@ router.get("/", function(req,res){
 					}
 				}
 			}
-			// character.location = {x:1, y:1}
+			// character.location = {x:10, y:3}
 			// character.movements = 10
-			// game.turnOrder[0]=character
-			// db.game.find({'map.x':1, 'map.y':1}, function(err, tile){
-			// 	console.log(tile.x, tile.y)
-			// })
+			// character.save()
 			// game.map()
 			game.save()
 			res.send(game)
@@ -39,6 +39,99 @@ router.get("/", function(req,res){
 	// 	res.send(game)
 	})
 })
+
+//route for sending moves to a game.
+//first, validate a user is logged in,
+//then validate that the game belongs to the user
+//validate gamestates are correct
+//validate move
+//perform move
+//send a success/error response
+//user's browser will receive response and request a gamestate update.
+router.post("/:id", function(req,res){
+	var move = req.body.move
+	db.game.findOne({}).populate('characters').populate('turnOrder').exec(function(err, game){
+		if(err){
+			moveError(err, game, res)
+			return
+		}
+
+		var currentCharacter = game.turnOrder[game.turn]
+		if(currentCharacter.id===move.character){
+			move.moves.forEach(function(thisMove){
+				if(thisMove.action===0){//character is moving
+					var distance = getDistance(currentCharacter.location.x, currentCharacter.location.y, thisMove.at.x, thisMove.at.y)
+					if(distance<=currentCharacter.movements){
+						currentCharacter.movements-=distance
+						currentCharacter.location.x=thisMove.at.x
+						currentCharacter.location.y=thisMove.at.y
+					}else{
+						moveError("Move out of distance", game, res)
+						return
+					}
+					// console.log(distance)
+				}
+			})
+			game = incrementTurn(game)
+			saveGame(game)
+		}else{
+			moveError("Moving incorrect character", game, res)
+			return
+		}
+		console.log(game)
+
+		getGame(game._id, res)
+	})
+	//validate user session
+	//make sure user's current game matches the game they are sending
+	//make sure the current game is owned by user
+	//make sure the characterId of move = currentTurn id
+	//forEach move in move array:
+		//validate move
+		//tentatively run move
+	//if all moves are valid, run each move, one by one, updating game state
+	//if moves are not valid, return to previous gamestate, return gamestate with error
+	//after all moves are run
+		//increment turn counter
+		//if the current turn is opponent's character, run ai moves
+		//increment turn counter.
+		//if turncounter>turns, new round
+			//do end of turn events
+			//round++, start new round, add movements, do start of turn events
+			//calculate turn order
+		//send success plus new gamestate
+})
+
+function getGame(id, res){
+	console.log(id)
+	db.game.findOne({_id:id}).populate('characters').populate('turnOrder').exec(function(err, game){
+		res.send(game)
+	})
+}
+
+function moveError(error, game, res){
+	game.error = error
+	res.send(game)
+}
+
+function incrementTurn(game){
+	game.turn++
+	if(game.turn===game.turnOrder.length){//last character moved
+		game.round++
+		game.turn=0
+		game.turnOrder.forEach(function(character){
+			character.movements+=4
+		})
+	}
+	return game
+}
+
+function saveGame(game){
+	game.turnOrder.forEach(function(character){
+		character.save()
+	})
+	game.save()
+}
 
 function createGame(options){
 	db.game.create(options).then(function(game){

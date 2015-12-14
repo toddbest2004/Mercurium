@@ -6,6 +6,7 @@ var characterSchema = new Schema({
 	location: {x:Number,y:Number},
 	movements: Number,
 	name: String,
+	image: String,
 	characterClass: String,
 	currentHealth: Number,
 	maxHealth: Number,
