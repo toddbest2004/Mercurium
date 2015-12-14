@@ -3,6 +3,7 @@ angular.module('GameCtrls', [])
   var textures = ['highlight.png','sand.png', 'grass.png']
   $scope.game = {}
   $scope.move = {}
+  $scope.action = 0
   $scope.currentCharacter = false
   $scope.selectedCharacter = false
   $scope.characterData = "Test"
@@ -58,8 +59,7 @@ angular.module('GameCtrls', [])
     }
   }
   $scope.rightClick = function(tile){
-    $scope.clearSelected()
-    tile.selected = true
+
     console.log($scope.currentCharacter)
     var from = $scope.currentCharacter.location
     console.log(getDistance(tile.x,tile.y,from.x,from.y))
@@ -70,14 +70,15 @@ angular.module('GameCtrls', [])
         if(distance<=$scope.currentCharacter.movements&&distance>0){
           $scope.currentCharacter.movements-=distance
           $scope.currentCharacter.location = {x:tile.x, y:tile.y}
-          $scope.move.moves.push({action:0, at:{x:tile.x,y:tile.y}})
+          $scope.move.moves.push({action:$scope.action, at:{x:tile.x,y:tile.y}})
           highlightAvailableMoves()
         }
       }
-
       //if ability/action selected:
         //set action to tile as target, enable 'submit move'
     }
+    $scope.clearSelected()
+    tile.selected = true
     //else if hex is unoccupied
       //set action as move to tile, enable 'submit move'
   }
@@ -101,6 +102,9 @@ angular.module('GameCtrls', [])
   $scope.clearSelected = function(){
     $scope.game.map.forEach(function(tile){
       tile.selected=false
+      if(tile.x===$scope.currentCharacter.location.x&&tile.y===$scope.currentCharacter.location.y){
+        tile.selected=true
+      }
     })
     $scope.characterData = ""
   }
@@ -123,9 +127,10 @@ angular.module('GameCtrls', [])
   }
   function revertChanges(){
     $scope.newGameState = $scope.game
-    $scope.currentCharacter = $scope.newGameState.turnOrder[$scope.game.turn]
+    $scope.currentCharacter = $scope.newGameState.characters[$scope.newGameState.turnOrder[$scope.game.turn]]
     $scope.move = {game: $scope.game._id,character: $scope.currentCharacter._id, moves:[]}
     $scope.clearSelected()
+    $scope.action = 0
     highlightAvailableMoves()
     console.log($scope.currentCharacter)
   }
@@ -138,8 +143,14 @@ angular.module('GameCtrls', [])
       if(tile){
         tile.highlighted=false
         var distance = getDistance(tile.x, tile.y, charx,chary)
-        if(distance<=movements && distance>0&& !tileOccupied(tile.x,tile.y)){
-          tile.highlighted=true
+        if($scope.action===0){//character is moving
+          if(distance<=movements && distance>0&& !tileOccupied(tile.x,tile.y)){
+            tile.highlighted=true
+          }
+        }else{
+          //if tile within action range, tile is occupied, tile occupied by enemy
+            tile.highlighted=true
+          
         }
       }
     }

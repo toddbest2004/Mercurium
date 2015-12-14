@@ -15,17 +15,19 @@
 <input type="submit">
 </form>
 <div style="float:left;" ng-if="currentCharacter">
-This Area will show current turn character and any selected character:<br>
-You have selected: 
-{{currentCharacter.name}}
-<br>
-current.stat &gt; selected.stat<br>
-current.stat &gt; selected.stat<br>
+<h1>{{currentCharacter.name}}</h1>
+<div>Health: {{currentCharacter.currentHealth}}/{{currentCharacter.maxHealth}}</div>
+<div>Attack: {{currentCharacter.attack}}</div>
+<div>Defense: {{currentCharacter.defense}}</div>
+<div>Remaining Action Points: {{currentCharacter.movements}}</div>
 </div>
-<div>
-{{move}}
+<div style="float:left;" ng-if="selectedCharacter">
+<h1>{{selectedCharacter.name}}</h1>
+<div>-&gt; Health: {{selectedCharacter.currentHealth}}/{{selectedCharacter.maxHealth}}</div>
+<div>-&gt; Attack: {{selectedCharacter.attack}}</div>
+<div>-&gt; Defense: {{selectedCharacter.defense}}</div>
 </div>
-<div>
-{{gameData}}
-</div>
+<ul>
+<li ng-repeat="action in currentCharacter.actions">{{action.name}}</li>
+</ul>
 </div>

@@ -5,31 +5,32 @@ var db = require('./../mongoose')
 
 router.get("/", function(req,res){
 	// createGame()
-	db.game.findOne({}).populate('characters').populate('turnOrder').exec(function(err, game){
+	db.game.findOne({}).populate('characters').exec(function(err, game){
 		db.character.findOne({name:"test"}).then(function(character){
+			// console.log(character.actions)
+			// character.name = "Character1"
+			// character.characterClass = "Knight"
 			// character.save()
 		// 	addExistingCharacterToGame(character, game)
 			// game.characters[0].movements=10
 			// console.log(characterMove(game.characters[0],3, 1))
-			game.map=[]
-			game.length = 10
-			game.height = 11 //actual height will be one less
-			game.round = 0
-			game.turn = 1
-			for(var y=0; y<game.height;y++){
-				for(var x=0; x<parseInt(game.length+game.height/2); x++){
-					if(y+x*2>game.height&&y+2*x<game.length*2+game.height){
-						game.map.push({x:x, y:y, texture:Math.floor((Math.random() * 2) + 1)})
-					}else{
-						game.map.push(null)
-					}
-				}
-			}
+			// game.map=[]
+			// game.length = 10
+			// game.height = 11 //actual height will be one less
+			// for(var y=0; y<game.height;y++){
+			// 	for(var x=0; x<parseInt(game.length+game.height/2); x++){
+			// 		if(y+x*2>game.height&&y+2*x<game.length*2+game.height){
+			// 			game.map.push({x:x, y:y, texture:Math.floor((Math.random() * 2) + 1)})
+			// 		}else{
+			// 			game.map.push(null)
+			// 		}
+			// 	}
+			// }
 			// character.location = {x:10, y:3}
 			// character.movements = 10
 			// character.save()
 			// game.map()
-			game.save()
+			// game.save()
 			res.send(game)
 		})
 	// 	// db.character.findOne({}).then(function(character){
@@ -50,13 +51,13 @@ router.get("/", function(req,res){
 //user's browser will receive response and request a gamestate update.
 router.post("/:id", function(req,res){
 	var move = req.body.move
-	db.game.findOne({}).populate('characters').populate('turnOrder').exec(function(err, game){
+	db.game.findOne({}).populate('characters').exec(function(err, game){
 		if(err){
 			moveError(err, game, res)
 			return
 		}
 
-		var currentCharacter = game.turnOrder[game.turn]
+		var currentCharacter = getCurrentCharacter(game)
 		if(currentCharacter.id===move.character){
 			move.moves.forEach(function(thisMove){
 				if(thisMove.action===0){//character is moving
@@ -73,14 +74,11 @@ router.post("/:id", function(req,res){
 				}
 			})
 			game = incrementTurn(game)
-			saveGame(game)
+			saveGame(game, res)
 		}else{
 			moveError("Moving incorrect character", game, res)
 			return
 		}
-		console.log(game)
-
-		getGame(game._id, res)
 	})
 	//validate user session
 	//make sure user's current game matches the game they are sending
@@ -104,9 +102,13 @@ router.post("/:id", function(req,res){
 
 function getGame(id, res){
 	console.log(id)
-	db.game.findOne({_id:id}).populate('characters').populate('turnOrder').exec(function(err, game){
+	db.game.findOne({_id:id}).populate('characters').exec(function(err, game){
 		res.send(game)
 	})
+}
+
+function getCurrentCharacter(game){
+	return game.characters[game.turnOrder[game.turn]]
 }
 
 function moveError(error, game, res){
@@ -119,18 +121,21 @@ function incrementTurn(game){
 	if(game.turn===game.turnOrder.length){//last character moved
 		game.round++
 		game.turn=0
-		game.turnOrder.forEach(function(character){
+		game.characters.forEach(function(character){
 			character.movements+=4
 		})
 	}
 	return game
 }
 
-function saveGame(game){
-	game.turnOrder.forEach(function(character){
+function saveGame(game, res){
+	game.characters.forEach(function(character){
 		character.save()
 	})
-	game.save()
+	game.save(function(err, data){
+		console.log("sendingGame")
+		res.send(game)
+	})
 }
 
 function createGame(options){
