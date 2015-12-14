@@ -14,20 +14,34 @@
 <form  ng-submit="sendMove()">
 <input type="submit">
 </form>
-<div style="float:left;" ng-if="currentCharacter">
-<h1>{{currentCharacter.name}}</h1>
-<div>Health: {{currentCharacter.currentHealth}}/{{currentCharacter.maxHealth}}</div>
-<div>Attack: {{currentCharacter.attack}}</div>
-<div>Defense: {{currentCharacter.defense}}</div>
-<div>Remaining Action Points: {{currentCharacter.movements}}</div>
+
+<div style="float:left;">
+	<div style="background-color:#ccc;">
+		<h1 style="margin:0;padding:0;"><img src="{{currentCharacter.image}}">{{currentCharacter.name}}</h1>
+	</div>
+	<!-- stats -->
+	<div style="display:inline-block;background-color:#ccc;vertical-align:top;" class="characterDetails">
+		<div>Health: {{currentCharacter.currentHealth}}/{{currentCharacter.maxHealth}}</div>
+		<div>Attack: {{currentCharacter.attack}}</div>
+		<div>Defense: {{currentCharacter.defense}}</div>
+		<div>Remaining Action Points: {{currentCharacter.movements}}</div>
+	</div>
+	<div style="display:inline-block" class="characterDetails" ng-if="selectedCharacter">
+		<div>-&gt;</div>
+		<div>-&gt;</div>
+		<div>-&gt;</div>
+	</div>
+	<div style="display:inline-block;background-color:#aaa;" class="characterDetails" ng-if="selectedCharacter">
+		<div>Health: {{selectedCharacter.currentHealth}}/{{selectedCharacter.maxHealth}}</div>
+		<div>Attack: {{selectedCharacter.attack}}</div>
+		<div>Defense: {{selectedCharacter.defense}}</div>
+	</div>
+	<div  style="background-color:#aaa;">
+		<h1 style="padding:0;margin:0">{{selectedCharacter.name}}<img src="{{selectedCharacter.image}}"></h1>
+	</div>
 </div>
-<div style="float:left;" ng-if="selectedCharacter">
-<h1>{{selectedCharacter.name}}</h1>
-<div>-&gt; Health: {{selectedCharacter.currentHealth}}/{{selectedCharacter.maxHealth}}</div>
-<div>-&gt; Attack: {{selectedCharacter.attack}}</div>
-<div>-&gt; Defense: {{selectedCharacter.defense}}</div>
-</div>
+
 <ul>
-<li ng-repeat="action in currentCharacter.actions">{{action.name}}</li>
+<li ng-repeat="action in currentCharacter.actions track by $index" ng-click="setAction($index)">{{action.name}}</li>
 </ul>
 </div>

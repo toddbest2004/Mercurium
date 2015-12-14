@@ -6,10 +6,12 @@ var db = require('./../mongoose')
 router.get("/", function(req,res){
 	// createGame()
 	db.game.findOne({}).populate('characters').exec(function(err, game){
-		db.character.findOne({name:"test"}).then(function(character){
-			// console.log(character.actions)
-			// character.name = "Character1"
-			// character.characterClass = "Knight"
+		db.character.findOne({name:"test2"}).then(function(character){
+			// console.log(character)
+			// character.name="Character2"
+			// character.characterClass="Archer"
+			// character.actions=[{range:1,name:"Move",actionPoints:1},{range:3,name:"Attack",actionPoints:1}]
+			// // console.log(character)
 			// character.save()
 		// 	addExistingCharacterToGame(character, game)
 			// game.characters[0].movements=10
@@ -60,8 +62,8 @@ router.post("/:id", function(req,res){
 		var currentCharacter = getCurrentCharacter(game)
 		if(currentCharacter.id===move.character){
 			move.moves.forEach(function(thisMove){
+				var distance = getDistance(currentCharacter.location.x, currentCharacter.location.y, thisMove.at.x, thisMove.at.y)
 				if(thisMove.action===0){//character is moving
-					var distance = getDistance(currentCharacter.location.x, currentCharacter.location.y, thisMove.at.x, thisMove.at.y)
 					if(distance<=currentCharacter.movements){
 						currentCharacter.movements-=distance
 						currentCharacter.location.x=thisMove.at.x
@@ -71,6 +73,14 @@ router.post("/:id", function(req,res){
 						return
 					}
 					// console.log(distance)
+				}else{//character is attacking/using ability
+					var action = currentCharacter.actions[thisMove.action]
+					if(distance<=action.range&&distance>0&&action.actionPoints<=currentCharacter.movements){
+						performAction(currentCharacter, thisMove)
+						currentCharacter.movements-=action.actionPoints
+					}else{
+						moveError("Improper move sent", game, res)
+					}
 				}
 			})
 			game = incrementTurn(game)
@@ -99,6 +109,11 @@ router.post("/:id", function(req,res){
 			//calculate turn order
 		//send success plus new gamestate
 })
+
+function performAction(character, move){
+	console.log(character)
+	console.log(move.at)
+}
 
 function getGame(id, res){
 	console.log(id)

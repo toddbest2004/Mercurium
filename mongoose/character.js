@@ -4,7 +4,7 @@ var Schema = mongoose.Schema
 var characterSchema = new Schema({
 	user: {type: Schema.Types.ObjectId, ref: 'User'},
 	location: {x:Number,y:Number},
-	// actions: {range: Number,name:String,actionPoints:Number},
+	actions: [{range: Number,name:String,actionPoints:Number}],
 	movements: Number,
 	name: String,
 	image: String,
