@@ -8,9 +8,11 @@ var characterSchema = new Schema({
 	movements: Number,
 	name: String,
 	image: String,
+	team: Number,
 	characterClass: String,
 	currentHealth: Number,
 	maxHealth: Number,
+	speed: Number,
 	attack: Number,
 	defense: Number
 	// statusEffects: []

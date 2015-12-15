@@ -20,7 +20,7 @@ angular.module('GameCtrls', [])
       revertChanges()
       $scope.gameData = JSON.stringify(res.data)
     }, function error(res) {
-      console.log(res)
+      
     });
   }
   $scope.sendMove = function(){
@@ -37,11 +37,11 @@ angular.module('GameCtrls', [])
       revertChanges()
       $scope.gameData = JSON.stringify(res.data)
     }, function error(res) {
-      console.log(res)
+      
     });
   }
   function getMapIndex(x, y){
-    return x+y*$scope.game.height
+    return x+y*($scope.game.length*1.5)
   }
   function getDistance(x1,y1,x2,y2){
     var z1 = -(x1+y1)
@@ -61,29 +61,29 @@ angular.module('GameCtrls', [])
   $scope.rightClick = function(tile){
     var from = $scope.currentCharacter.location
     //if character selected
-    
-      if(from){
-        var distance = getDistance(tile.x, tile.y, from.x, from.y)
-        if(!tileOccupied(tile.x, tile.y)){
-          if(distance<=$scope.currentCharacter.movements&&distance>0){
-            $scope.currentCharacter.movements-=distance
-            $scope.currentCharacter.location = {x:tile.x, y:tile.y}
-            $scope.move.moves.push({action:0, at:{x:tile.x,y:tile.y}})
-            highlightAvailableMoves()
-          }
-        }else{
-          var action = $scope.currentCharacter.actions[$scope.action]
-          console.log(action)
-          if(distance<=action.range&&action.actionPoints<=$scope.currentCharacter.movements&&distance>0){
-            console.log(action.actionPoints)
-            $scope.currentCharacter.movements-=action.actionPoints
-            $scope.move.moves.push({action:$scope.action, at:{x:tile.x,y:tile.y}})
-            highlightAvailableMoves()
-          }
-      //if ability/action selected:
-        //set action to tile as target, enable 'submit move'
+    if($scope.selectedCharacter = tileOccupied(tile.x, tile.y)){
+      //do additional stuff for clicking on a character
+    }
+    if(from){
+      var distance = getDistance(tile.x, tile.y, from.x, from.y)
+      if(!tileOccupied(tile.x, tile.y)){
+        if(distance<=$scope.currentCharacter.movements&&distance>0){
+          $scope.currentCharacter.movements-=distance
+          $scope.currentCharacter.location = {x:tile.x, y:tile.y}
+          $scope.move.moves.push({action:0, at:{x:tile.x,y:tile.y}})
+          highlightAvailableMoves()
         }
+      }else{
+        var action = $scope.currentCharacter.actions[$scope.action]
+        if(distance<=action.range&&action.actionPoints<=$scope.currentCharacter.movements&&distance>0){
+          $scope.currentCharacter.movements-=action.actionPoints
+          $scope.move.moves.push({action:$scope.action, at:{x:tile.x,y:tile.y}})
+          highlightAvailableMoves()
+        }
+    //if ability/action selected:
+      //set action to tile as target, enable 'submit move'
       }
+    }
     
     $scope.clearSelected()
     tile.selected = true
@@ -94,7 +94,25 @@ angular.module('GameCtrls', [])
   }
   $scope.hoverOut = function(tile){
   }
-
+  $scope.getMoveIcon = function(move){
+    if(move.action===0){
+      return "images/footsteps.png"
+    }else{
+      return "images/attack.png"
+    }
+  }
+  $scope.getMoveTarget = function(move){
+    if(move.action===0){
+      var index = getMapIndex(move.at.x,move.at.y)
+      console.log($scope.newGameState.map.length,index)
+      console.log($scope.newGameState.map[index])
+      console.log(index)
+      return $scope.getImage($scope.newGameState.map[index])
+    }else{
+      var target = tileOccupied(move.at.x, move.at.y)
+      return target.image
+    }
+  }
   $scope.getImage = function(tile){
     // if(tile.selected){
     //   return 'images/'+textures[0]
@@ -135,12 +153,12 @@ angular.module('GameCtrls', [])
   }
   function revertChanges(){
     $scope.newGameState = $scope.game
+    $scope.selectedCharacter = false
     $scope.currentCharacter = $scope.newGameState.characters[$scope.newGameState.turnOrder[$scope.game.turn]]
     $scope.move = {game: $scope.game._id,character: $scope.currentCharacter._id, moves:[]}
     $scope.clearSelected()
     $scope.action=1
     highlightAvailableMoves()
-    console.log($scope.currentCharacter)
   }
   function highlightAvailableMoves(){
     var charx = $scope.currentCharacter.location.x
@@ -164,7 +182,6 @@ angular.module('GameCtrls', [])
         }
       }
     }
-    console.log($scope.currentCharacter)
   }
   $scope.setAction = function(index){
     $scope.action = index

@@ -5,8 +5,37 @@ var db = require('./../mongoose')
 
 router.get("/", function(req,res){
 	// createGame()
-	db.game.findOne({}).populate('characters').exec(function(err, game){
-		db.character.findOne({name:"test2"}).then(function(character){
+	db.game.findOne({}).exec(function(err, game){
+		game.characters=[{
+			location:{x:9,y:2},
+			actions:[{range:1,name:"Move",actionPoints:1},{range:1,name:"Attack",actionPoints:2.5}],
+			movements:5,
+			name:"Character1",
+			image:"images/character1.png",
+			team:1,
+			characterClass:"Knight",
+			currentHealth:100,
+			maxHealth:100,
+			speed:5,
+			attack:10,
+			defense:5
+		},
+		{
+			location:{x:7,y:3},
+			actions:[{range:1,name:"Move",actionPoints:1},{range:3,name:"Attack",actionPoints:2.5}],
+			movements:5,
+			name:"Character2",
+			image:"images/character2.png",
+			team:2,
+			characterClass:"Archer",
+			currentHealth:80,
+			maxHealth:80,
+			speed:5,
+			attack:10,
+			defense:2
+		}]
+		game.inProgress=true
+		game.turnOrder=[0,1]
 			// console.log(character)
 			// character.name="Character2"
 			// character.characterClass="Archer"
@@ -33,8 +62,9 @@ router.get("/", function(req,res){
 			// character.save()
 			// game.map()
 			// game.save()
-			res.send(game)
-		})
+
+			saveGame(game, res)
+
 	// 	// db.character.findOne({}).then(function(character){
 	// 		game.characters[0].location.x=2
 	// 		game.save()
@@ -53,7 +83,7 @@ router.get("/", function(req,res){
 //user's browser will receive response and request a gamestate update.
 router.post("/:id", function(req,res){
 	var move = req.body.move
-	db.game.findOne({}).populate('characters').exec(function(err, game){
+	db.game.findOne({}).exec(function(err, game){
 		if(err){
 			moveError(err, game, res)
 			return
@@ -76,8 +106,11 @@ router.post("/:id", function(req,res){
 				}else{//character is attacking/using ability
 					var action = currentCharacter.actions[thisMove.action]
 					if(distance<=action.range&&distance>0&&action.actionPoints<=currentCharacter.movements){
-						performAction(currentCharacter, thisMove)
-						currentCharacter.movements-=action.actionPoints
+						if(performAction(game, currentCharacter, thisMove)){
+							currentCharacter.movements-=action.actionPoints
+						}else{
+							moveError("Untargetted attack.", game, res)
+						}
 					}else{
 						moveError("Improper move sent", game, res)
 					}
@@ -110,14 +143,17 @@ router.post("/:id", function(req,res){
 		//send success plus new gamestate
 })
 
-function performAction(character, move){
-	console.log(character)
-	console.log(move.at)
+function performAction(game, character, move){
+	if(target = tileOccupied(game, move.at.x, move.at.y)){
+		attack(character.attack, target)
+		return true
+	}
+	return false
 }
 
 function getGame(id, res){
 	console.log(id)
-	db.game.findOne({_id:id}).populate('characters').exec(function(err, game){
+	db.game.findOne({_id:id}).exec(function(err, game){
 		res.send(game)
 	})
 }
@@ -140,13 +176,39 @@ function incrementTurn(game){
 			character.movements+=4
 		})
 	}
+
+	if(checkDeath(game.characters[game.turn])){
+		var teamAlive = [0,0]
+		game.characters.forEach(function(character){
+			if(!checkDeath(character)){
+				teamAlive[character.team-1]++
+			}
+			if(teamAlive[0]===0||teamAlive[1]===0){
+				game.inProgress=false
+				console.log("GAME OVER")
+			}else{
+				incrementTurn(game)
+			}
+		})
+	}
 	return game
 }
 
+ function tileOccupied(game, x, y){
+    var result = false
+    //go through characters array and see if any characters are present at location
+    game.characters.forEach(function(character){
+      if(character.location.x==x && character.location.y==y){
+        result = character
+      }
+    })
+    return result
+  }
+
 function saveGame(game, res){
-	game.characters.forEach(function(character){
-		character.save()
-	})
+	// game.characters.forEach(function(character){
+	// 	character.save()
+	// })
 	game.save(function(err, data){
 		console.log("sendingGame")
 		res.send(game)
@@ -187,16 +249,28 @@ function characterMove(character,x,y){
 	if(distance>0&&distance<character.movements){
 		character.location={x:x,y:y,z:z}
 		character.movements -= distance
-		character.save()
 		return true
 	}else{
 		return false
 	}
 }
 
-function attack(character, x, y){
-	var z = getZ(x,y)
+function attack(attack, target){
+	//damage = attack+-50%'
+	//adjusted damage = damage*(10-defense)/10 ((2) defense=20% damage reduction)
+	var damage = Math.round(attack * (Math.random()+.5))
+	var adjustedDamage = Math.round(damage*(10-target.defense)/10)
+	target.currentHealth -= adjustedDamage
+	checkDeath(target)
+	console.log("attacking", damage, adjustedDamage)
+}
 
+function checkDeath(character){
+	if(character.currentHealth<=0){
+		character.currentHealth=0
+		return true
+	}
+	return false
 }
 
 function getDistance(x1,y1,x2,y2){

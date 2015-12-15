@@ -2,7 +2,21 @@ var mongoose = require('mongoose')
 var Schema = mongoose.Schema
 
 var gameSchema = new Schema({
-	characters: [{type: Schema.Types.ObjectId, ref: 'character'}],
+	characters: [{
+		location: {x:Number,y:Number},
+		actions: [{range: Number,name:String,actionPoints:Number}],
+		movements: Number,
+		name: String,
+		image: String,
+		team: Number,
+		characterClass: String,
+		currentHealth: Number,
+		maxHealth: Number,
+		speed: Number,
+		attack: Number,
+		defense: Number
+	}],
+	inProgress:Boolean,
 	length: Number,
 	height: Number,
 	map: [{x:Number, y:Number, texture:Number}],
