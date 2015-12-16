@@ -1,5 +1,5 @@
 angular.module('GameCtrls', [])
-.controller('GameCtrl', ['$scope', '$http', function($scope, $http) {
+.controller('GameCtrl', ['$scope', '$http', '$location', function($scope, $http, $location) {
   var textures = ['highlight.png','sand.png', 'grass.png']
   $scope.game = {}
   $scope.move = {}
@@ -20,7 +20,7 @@ angular.module('GameCtrls', [])
       revertChanges()
       $scope.gameData = JSON.stringify(res.data)
     }, function error(res) {
-      
+      $location.path("/");
     });
   }
   $scope.sendMove = function(){
@@ -37,7 +37,7 @@ angular.module('GameCtrls', [])
       revertChanges()
       $scope.gameData = JSON.stringify(res.data)
     }, function error(res) {
-      
+      $location.path("/");
     });
   }
   function getMapIndex(x, y){

@@ -212,6 +212,7 @@ function saveGame(game, res){
 	game.save(function(err, data){
 		console.log("sendingGame")
 		res.send(game)
+		// res.status(404).send('error')
 	})
 }
 

@@ -1,8 +1,14 @@
 var app = angular.module('GameApp', ['GameCtrls','ngRoute'])
 app.config(['$routeProvider', '$locationProvider', function($routeProvider, $locationProvider){
 $routeProvider
-.when('/', {
+.when('/showgame', {
 	templateUrl: 'app/views/game.html'
+})
+.when('/profile', {
+	templateUrl: 'app/views/profile.html'
+})
+.when('/', {
+	templateUrl: 'app/views/index.html'
 })
 .otherwise({
 	templateUrl: 'app/views/404.html'
