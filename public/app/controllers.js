@@ -1,5 +1,5 @@
 angular.module('GameCtrls', [])
-.controller('GameCtrl', ['$scope', '$http', '$location', function($scope, $http, $location) {
+.controller('GameCtrl', ['$scope', '$http', '$location', '$routeParams', function($scope, $http, $location, $routeParams) {
   var textures = ['highlight.png','sand.png', 'grass.png']
   $scope.game = {}
   $scope.move = {}
@@ -10,7 +10,7 @@ angular.module('GameCtrls', [])
 
   var getGame = function(){
     var req = {
-      url: "http://localhost:3000/game/",
+      url: "/game/"+$routeParams.id,
       method: 'GET',
       params: {
       }
@@ -25,7 +25,7 @@ angular.module('GameCtrls', [])
   }
   $scope.sendMove = function(){
     var req = {
-      url: "http://localhost:3000/game/"+$scope.game._id,
+      url: "/game/"+$scope.game._id,
       method: 'POST',
       data: {
         move:$scope.move
@@ -189,4 +189,95 @@ angular.module('GameCtrls', [])
   }
 
   getGame()
+}]).controller('UserCtrl', ['$scope', '$http', '$location', function($scope, $http, $location) {
+  $scope.login = function(){
+    var req = {
+      url: "/user/login",
+      method: 'POST',
+      data: {
+        username:$scope.loginUsername,
+        password:$scope.loginPassword
+      },
+      headers: {'Content-Type': 'application/json'}
+    }
+    $scope.loginUsername=''
+    $scope.loginPassword=''
+    $http(req).then(function success(res) {
+      if(res.data.result){
+        $location.path("/profile")
+      }
+    }, function error(res) {
+      alert(res.data.error)
+    });
+  }
+  $scope.register = function(){
+    if($scope.registerPassword2!==$scope.registerPassword1){
+      $scope.registerUsername=''
+      $scope.registerPassword1=''
+      $scope.registerPassword2=''
+      alert("Passwords do not match.")
+      return
+    }
+    var req = {
+      url: "/user/register",
+      method: 'POST',
+      data: {
+        username:$scope.registerUsername,
+        password1:$scope.registerPassword1,
+        password2:$scope.registerPassword2
+      },
+      headers: {'Content-Type': 'application/json'}
+    }
+    $scope.registerUsername=''
+    $scope.registerPassword1=''
+    $scope.registerPassword2=''
+    $http(req).then(function success(res) {
+      if(res.data.result){
+        $location.path("/profile")
+      }
+    }, function error(res) {
+      alert(res.data.error)
+    });
+  }
+  $scope.logout = function(){
+    var req = {
+      url: "/user/logout",
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'}
+    }
+    $http(req).then(function success(res) {
+      if(res.data.result){
+        $location.path("/")
+      }
+    }, function error(res) {
+      alert("Unable to contact server.")
+    });
+  }
+  $scope.loadGames = function(){
+    var req = {
+      url: "/user/games",
+      method: 'GET',
+      headers: {'Content-Type': 'application/json'}
+    }
+    $http(req).then(function success(res) {
+      if(res.data.result){
+        $scope.games = res.data.games
+      }
+    }, function error(res) {
+      $location.path("/")
+    });
+  }
+  $scope.createGame = function(){
+    alert("test")
+    var req = {
+      url: "/game/create",
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'}
+    }
+    $http(req).then(function success(res) {
+      $scope.loadGames()
+    }, function error(res) {
+      $scope.loadGames()
+    });
+  }
 }])

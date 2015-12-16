@@ -1,1 +1,31 @@
-Index!
+<div ng-controller="UserCtrl">
+<form ng-submit="login()">
+<h2>Log In</h2>
+<div class="form-group">
+<input type="text" name="username" id="username" placeholder="username" ng-model="loginUsername">
+</div>
+<div class="form-group">
+<input type="password" name="password" id="password" placeholder="password" ng-model="loginPassword">
+</div>
+<div class="form-group">
+<input type="submit" name="submit" id="submit" value="Log In">
+</div>
+</form>
+</div>
+<div ng-controller="UserCtrl">
+<form ng-submit="register()">
+<h2>Register</h2>
+<div class="form-group">
+<input type="text" name="username" id="username" placeholder="username" ng-model="registerUsername">
+</div>
+<div class="form-group">
+<input type="password" name="password" id="password" placeholder="password" ng-model="registerPassword1">
+</div>
+<div class="form-group">
+<input type="password" name="password2" id="password2" placeholder="password2" ng-model="registerPassword2">
+</div>
+<div class="form-group">
+<input type="submit" name="submit" id="submit" value="Register">
+</div>
+</form>
+</div>

@@ -1,1 +1,9 @@
-Profile
+<div ng-controller="UserCtrl" ng-init="loadGames()">
+<a href='logout' ng-click="logout()">Logout</a>
+<a href='/#/profile'>Profile</a>
+<ul>
+Your Games
+<li ng-repeat="game in games"><a href="/#/showgame/{{game}}">{{game}}</a></li>
+</ul>
+<button ng-click="createGame()">Create New Game</button>
+</div>

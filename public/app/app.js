@@ -1,7 +1,7 @@
 var app = angular.module('GameApp', ['GameCtrls','ngRoute'])
 app.config(['$routeProvider', '$locationProvider', function($routeProvider, $locationProvider){
 $routeProvider
-.when('/showgame', {
+.when('/showgame/:id', {
 	templateUrl: 'app/views/game.html'
 })
 .when('/profile', {

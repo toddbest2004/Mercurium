@@ -3,73 +3,49 @@ var router = express.Router();
 
 var db = require('./../mongoose')
 
-router.get("/", function(req,res){
-	// createGame()
-	db.game.findOne({}).exec(function(err, game){
-		game.characters=[{
-			location:{x:9,y:2},
-			actions:[{range:1,name:"Move",actionPoints:1},{range:1,name:"Attack",actionPoints:2.5}],
-			movements:5,
-			name:"Character1",
-			image:"images/character1.png",
-			team:1,
-			characterClass:"Knight",
-			currentHealth:100,
-			maxHealth:100,
-			speed:5,
-			attack:10,
-			defense:5
-		},
-		{
-			location:{x:7,y:3},
-			actions:[{range:1,name:"Move",actionPoints:1},{range:3,name:"Attack",actionPoints:2.5}],
-			movements:5,
-			name:"Character2",
-			image:"images/character2.png",
-			team:2,
-			characterClass:"Archer",
-			currentHealth:80,
-			maxHealth:80,
-			speed:5,
-			attack:10,
-			defense:2
-		}]
-		game.inProgress=true
-		game.turnOrder=[0,1]
-			// console.log(character)
-			// character.name="Character2"
-			// character.characterClass="Archer"
-			// character.actions=[{range:1,name:"Move",actionPoints:1},{range:3,name:"Attack",actionPoints:1}]
-			// // console.log(character)
-			// character.save()
-		// 	addExistingCharacterToGame(character, game)
-			// game.characters[0].movements=10
-			// console.log(characterMove(game.characters[0],3, 1))
-			// game.map=[]
-			// game.length = 10
-			// game.height = 11 //actual height will be one less
-			// for(var y=0; y<game.height;y++){
-			// 	for(var x=0; x<parseInt(game.length+game.height/2); x++){
-			// 		if(y+x*2>game.height&&y+2*x<game.length*2+game.height){
-			// 			game.map.push({x:x, y:y, texture:Math.floor((Math.random() * 2) + 1)})
-			// 		}else{
-			// 			game.map.push(null)
-			// 		}
-			// 	}
-			// }
-			// character.location = {x:10, y:3}
-			// character.movements = 10
-			// character.save()
-			// game.map()
-			// game.save()
-
+router.get("/:id", function(req,res){
+	if(!req.session.username){
+		res.status(404).send({result:false,error:"You are not logged in."})
+		return
+	}
+	var gameId = req.params.id.toString()
+	db.user.findOne({username:req.session.username},function(err, user){
+		if(err||!user){
+			res.status(404).send({result:false,error:"Error reading database."})
+			return
+		}
+		if(user.games.indexOf(gameId)===-1){
+			res.status(404).send({result:false,error:"That is not your game."})
+			return
+		}
+		db.game.findOne({_id:gameId}, function(err, game){
+			if(err||!game){
+				res.status(404).send({result:false,error:"Could not load your game."})
+				return
+			}
+			//everything loaded fine, lets send a game!
 			saveGame(game, res)
+		})
+	})
+})
 
-	// 	// db.character.findOne({}).then(function(character){
-	// 		game.characters[0].location.x=2
-	// 		game.save()
-	// 	// })
-	// 	res.send(game)
+router.post("/create", function(req, res){
+	console.log('creating')
+	if(!req.session.username){
+		res.status(404).send({result:false,error:"You are not logged in."})
+		return
+	}
+	db.user.findOne({username:req.session.username},function(err, user){
+		if(err||!user){
+			res.status(404).send({result:false,error:"Error reading database."})
+			return
+		}
+		console.log("valid")
+		createGame(function(game){
+			user.games.push(game.id)
+			user.save()
+			res.send({result:true})
+		})
 	})
 })
 
@@ -82,8 +58,9 @@ router.get("/", function(req,res){
 //send a success/error response
 //user's browser will receive response and request a gamestate update.
 router.post("/:id", function(req,res){
+	var gameId = req.params.id.toString()
 	var move = req.body.move
-	db.game.findOne({}).exec(function(err, game){
+	db.game.findOne({_id:gameId}).exec(function(err, game){
 		if(err){
 			moveError(err, game, res)
 			return
@@ -142,6 +119,71 @@ router.post("/:id", function(req,res){
 			//calculate turn order
 		//send success plus new gamestate
 })
+
+function createGame(callback){
+	var game = new db.game()
+	console.log(game)
+	game.characters=[{
+		location:{x:9,y:2},
+		actions:[{range:1,name:"Move",actionPoints:1},{range:1,name:"Attack",actionPoints:2.5}],
+		movements:5,
+		name:"Character1",
+		image:"images/character1.png",
+		team:1,
+		characterClass:"Knight",
+		currentHealth:100,
+		maxHealth:100,
+		speed:5,
+		attack:10,
+		defense:5
+	},
+	{
+		location:{x:7,y:3},
+		actions:[{range:1,name:"Move",actionPoints:1},{range:3,name:"Attack",actionPoints:2.5}],
+		movements:5,
+		name:"Character2",
+		image:"images/character2.png",
+		team:2,
+		characterClass:"Archer",
+		currentHealth:80,
+		maxHealth:80,
+		speed:5,
+		attack:10,
+		defense:2
+	}]
+	game.inProgress=true
+	game.turnOrder=[0,1]
+	game.turn=0
+	game.round=0
+	game.map=[]
+	game.length = 10
+	game.height = 11 //actual height will be one less
+	for(var y=0; y<game.height;y++){
+		for(var x=0; x<parseInt(game.length+game.height/2); x++){
+			if(y+x*2>game.height&&y+2*x<game.length*2+game.height){
+				game.map.push({x:x, y:y, texture:Math.floor((Math.random() * 2) + 1)})
+			}else{
+				game.map.push(null)
+			}
+		}
+	}
+			// character.location = {x:10, y:3}
+			// character.movements = 10
+			// character.save()
+			// game.map()
+	game.save(function(err, savedgame){
+		callback(savedgame)
+	})
+
+			// saveGame(game, res)
+
+	// 	// db.character.findOne({}).then(function(character){
+	// 		game.characters[0].location.x=2
+	// 		game.save()
+	// 	// })
+	// 	res.send(game)
+	// })
+}
 
 function performAction(game, character, move){
 	if(target = tileOccupied(game, move.at.x, move.at.y)){
@@ -216,11 +258,11 @@ function saveGame(game, res){
 	})
 }
 
-function createGame(options){
-	db.game.create(options).then(function(game){
-		return game;
-	})
-}
+// function createGame(options){
+// 	db.game.create(options).then(function(game){
+// 		return game;
+// 	})
+// }
 
 function createTile(x, y, game){
 	db.tile.create({x:x, y:y, texture:Math.floor((Math.random() * 2) + 1)}, function(err, tile){

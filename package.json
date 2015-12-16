@@ -17,8 +17,10 @@
   },
   "homepage": "https://github.com/toddbest2004/Mercurium",
   "dependencies": {
+    "bcrypt": "^0.8.5",
     "body-parser": "^1.14.1",
     "express": "^4.13.3",
+    "express-session": "^1.12.1",
     "mongoose": "^4.3.0"
   }
 }
