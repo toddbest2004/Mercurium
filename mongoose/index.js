@@ -7,7 +7,7 @@ var basename  = path.basename(module.filename);
 var env       = process.env.NODE_ENV || 'development';
 // var config    = require(__dirname + '/../config/config.json')[env];
 
-mongoose.connect('mongodb://localhost/mercurium')
+mongoose.connect(process.env.MONGOLAB_URI || 'mongodb://localhost/mercurium')
 var db = mongoose.connection
 
 db.on('error', function(error){console.log(error)})
