@@ -4,12 +4,12 @@ var router = express.Router();
 var db = require('./../mongoose')
 
 router.get("/:id", function(req,res){
-	if(!req.session.username){
+	if(!req.session.user_name){
 		res.status(404).send({result:false,error:"You are not logged in."})
 		return
 	}
 	var gameId = req.params.id.toString()
-	db.user.findOne({username:req.session.username},function(err, user){
+	db.user.findOne({user_name:req.session.user_name},function(err, user){
 		if(err||!user){
 			res.status(404).send({result:false,error:"Error reading database."})
 			return
@@ -31,11 +31,11 @@ router.get("/:id", function(req,res){
 
 router.post("/create", function(req, res){
 	console.log('creating')
-	if(!req.session.username){
+	if(!req.session.user_name){
 		res.status(404).send({result:false,error:"You are not logged in."})
 		return
 	}
-	db.user.findOne({username:req.session.username},function(err, user){
+	db.user.findOne({user_name:req.session.user_name},function(err, user){
 		if(err||!user){
 			res.status(404).send({result:false,error:"Error reading database."})
 			return

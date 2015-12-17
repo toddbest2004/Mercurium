@@ -5,7 +5,7 @@ var db = require('./../mongoose')
 
 router.post("/login", function(req,res){
 	// fetch user and test password verification
-	db.user.findOne({ username: req.body.username }, function(err, user) {
+	db.user.findOne({ user_name: req.body.user_name }, function(err, user) {
 	    if (err||!user) {
 	    	res.status(404).send({result:false,error:"Username/password not found."})
 	    	return
@@ -15,7 +15,7 @@ router.post("/login", function(req,res){
 	        if (err||!isMatch){
 	        	res.status(404).send({result:false,error:"Username/password not found."})
 	        }
-	        req.session.username=user.username
+	        req.session.user_name=user.user_name
 	        res.send({result:true})
 	    });
 	});
@@ -25,7 +25,7 @@ router.post("/register", function(req,res){
 		res.status(401).send({result:false,error:"Passwords do not match."})
 		return
 	}
-	db.user.findOne({username:req.body.username}, function(err, user){
+	db.user.findOne({user_name:req.body.user_name}, function(err, user){
 		if(err){
 			res.status(401).send({result:false,error:err})
 			return
@@ -34,18 +34,18 @@ router.post("/register", function(req,res){
 			res.status(401).send({result:false,error:"A user with that name already exists."})
 			return
 		}
-		newuser = new db.user({username:req.body.username, password:req.body.password1})
+		newuser = new db.user({user_name:req.body.user_name, password:req.body.password1})
 		newuser.save()
-		req.session.username=req.body.username
+		req.session.user_name=req.body.user_name
 		res.send({result:true})
 	})
 })
 router.get("/games/", function(req,res){
-	if(!req.session.username){
+	if(!req.session.user_name){
 		res.status(404).send({result:false, error:"You are not logged in."})
 		return
 	}
-	db.user.findOne({username:req.session.username}).populate('games').exec(function(err, user){
+	db.user.findOne({user_name:req.session.user_name}).populate('games').exec(function(err, user){
 		// db.game.find({}, function(err, games){
 		// 	user.games=games
 		// 	user.save()
@@ -66,7 +66,7 @@ router.post("/logout", function(req,res){
 	res.send({result:true})
 })
 router.get("/profile", function(req,res){
-	res.send(req.session.username)
+	res.send(req.session.user_name)
 })
 
 module.exports = router;

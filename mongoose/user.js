@@ -4,7 +4,7 @@ var bcrypt = require('bcrypt')
 var SALT_WORK_FACTOR = 10
 
 var userSchema = new Schema({
-	username: String,
+	user_name: String,
 	password: String,
 	email: String,
 	games: [{type: Schema.Types.ObjectId, ref: 'game'}]
