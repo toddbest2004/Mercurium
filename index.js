@@ -3,10 +3,10 @@ var db = require('./mongoose')
 var path = require('path')
 var bodyParser = require('body-parser')
 var session = require('cookie-session')
-var sessions = require('./sessions');
+// var sessions = require('./sessions');
 
 var app = express()
-var secret = process.env.cookie_secret
+var secret = process.env.cookie_secret || "asdf"
 // app.use(cookieParser(process.env.cookie_secret))
 app.use(session({ secret: secret}));
 
