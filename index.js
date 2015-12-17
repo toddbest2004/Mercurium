@@ -26,5 +26,7 @@ app.get('/*', function(req,res){
 var port = process.env.PORT || 3000
 var serverip = process.env.IP || "localhost"
 
+console.log(port, serverip)
+
 app.listen(port, serverip)
 console.log('Server running at '+serverip+":"+port)
