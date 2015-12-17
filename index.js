@@ -2,11 +2,13 @@ var express = require('express')
 var db = require('./mongoose')
 var path = require('path')
 var bodyParser = require('body-parser')
-var session = require('express-session');
+var sessions = require('./sessions');
 
 var app = express()
 
-app.use(session({secret:"alsdkfshH*&UH#*(HF"}))
+app.use(cookieParser(process.env.cookie_secret))
+app.use(sessions(process.env.REDISCLOUD_URL, process.env.cookie_secret));
+
 app.use(express.static(path.join(__dirname, 'public')))
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
