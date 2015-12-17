@@ -1,0 +1,73 @@
+0 info it worked if it ends with ok
+1 verbose cli [ '/usr/bin/node',
+1 verbose cli   '/usr/bin/npm',
+1 verbose cli   'install',
+1 verbose cli   '--save',
+1 verbose cli   'cookieParser' ]
+2 info using npm@1.4.28
+3 info using node@v0.10.40
+4 verbose node symlink /usr/bin/node
+5 verbose readDependencies using package.json deps
+6 verbose cache add [ 'cookieParser', null ]
+7 verbose cache add name=undefined spec="cookieParser" args=["cookieParser",null]
+8 verbose parsed url { protocol: null,
+8 verbose parsed url   slashes: null,
+8 verbose parsed url   auth: null,
+8 verbose parsed url   host: null,
+8 verbose parsed url   port: null,
+8 verbose parsed url   hostname: null,
+8 verbose parsed url   hash: null,
+8 verbose parsed url   search: null,
+8 verbose parsed url   query: null,
+8 verbose parsed url   pathname: 'cookieParser',
+8 verbose parsed url   path: 'cookieParser',
+8 verbose parsed url   href: 'cookieParser' }
+9 silly lockFile 0e37acdf-cookieParser cookieParser
+10 verbose lock cookieParser /home/todd/.npm/0e37acdf-cookieParser.lock
+11 silly lockFile 0e37acdf-cookieParser cookieParser
+12 silly lockFile 0e37acdf-cookieParser cookieParser
+13 verbose addNamed [ 'cookieParser', '' ]
+14 verbose addNamed [ null, '*' ]
+15 silly lockFile 74f56a99-cookieParser cookieParser@
+16 verbose lock cookieParser@ /home/todd/.npm/74f56a99-cookieParser.lock
+17 silly addNameRange { name: 'cookieParser', range: '*', hasData: false }
+18 verbose request where is /cookieParser
+19 verbose request registry https://registry.npmjs.org/
+20 verbose request id c4e42e779b0c1672
+21 verbose url raw /cookieParser
+22 verbose url resolving [ 'https://registry.npmjs.org/', './cookieParser' ]
+23 verbose url resolved https://registry.npmjs.org/cookieParser
+24 verbose request where is https://registry.npmjs.org/cookieParser
+25 info trying registry request attempt 1 at 11:16:32
+26 http GET https://registry.npmjs.org/cookieParser
+27 http 404 https://registry.npmjs.org/cookieParser
+28 silly registry.get cb [ 404,
+28 silly registry.get   { 'content-type': 'application/json',
+28 silly registry.get     'cache-control': 'max-age=0',
+28 silly registry.get     'content-length': '2',
+28 silly registry.get     'accept-ranges': 'bytes',
+28 silly registry.get     date: 'Thu, 17 Dec 2015 19:16:32 GMT',
+28 silly registry.get     via: '1.1 varnish',
+28 silly registry.get     age: '0',
+28 silly registry.get     connection: 'keep-alive',
+28 silly registry.get     'x-served-by': 'cache-lax1423-LAX',
+28 silly registry.get     'x-cache': 'MISS',
+28 silly registry.get     'x-cache-hits': '0',
+28 silly registry.get     'x-timer': 'S1450379792.920348,VS0,VE52' } ]
+29 silly lockFile 74f56a99-cookieParser cookieParser@
+30 silly lockFile 74f56a99-cookieParser cookieParser@
+31 error 404 Not Found
+31 error 404
+31 error 404 'cookieParser' is not in the npm registry.
+31 error 404 You should bug the author to publish it
+31 error 404 It was specified as a dependency of 'Mercurium'
+31 error 404
+31 error 404 Note that you can also install from a
+31 error 404 tarball, folder, or http url, or git url.
+32 error System Linux 3.16.0-52-generic
+33 error command "/usr/bin/node" "/usr/bin/npm" "install" "--save" "cookieParser"
+34 error cwd /home/todd/WDI/Mercurium
+35 error node -v v0.10.40
+36 error npm -v 1.4.28
+37 error code E404
+38 verbose exit [ 1, true ]

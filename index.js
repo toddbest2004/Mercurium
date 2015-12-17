@@ -2,6 +2,7 @@ var express = require('express')
 var db = require('./mongoose')
 var path = require('path')
 var bodyParser = require('body-parser')
+var session = require('cookie-session')
 var sessions = require('./sessions');
 
 var app = express()
