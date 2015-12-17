@@ -6,9 +6,9 @@ var session = require('cookie-session')
 var sessions = require('./sessions');
 
 var app = express()
-
-app.use(cookieParser(process.env.cookie_secret))
-app.use(sessions(process.env.REDISCLOUD_URL, process.env.cookie_secret));
+var secret = process.env.cookie_secret
+// app.use(cookieParser(process.env.cookie_secret))
+app.use(session({ secret: secret}));
 
 app.use(express.static(path.join(__dirname, 'public')))
 app.use(bodyParser.json());
