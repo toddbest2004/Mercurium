@@ -10,6 +10,7 @@ var env       = process.env.NODE_ENV || 'development';
 mongoose.connect(process.env.MONGOLAB_URI || 'mongodb://localhost/mercurium')
 var db = mongoose.connection
 
+
 db.on('error', function(error){console.log(error)})
 db.once('open', function(){
 	console.log('open')	
