@@ -9,7 +9,7 @@ router.get("/:id", function(req,res){
 		return
 	}
 	var gameId = req.params.id.toString()
-	db.user.findOne({user_name:req.session.user_name},function(err, user){
+	db.usermodel.findOne({user_name:req.session.user_name},function(err, user){
 		if(err||!user){
 			res.status(404).send({result:false,error:"Error reading database."})
 			return
@@ -35,7 +35,7 @@ router.post("/create", function(req, res){
 		res.status(404).send({result:false,error:"You are not logged in."})
 		return
 	}
-	db.user.findOne({user_name:req.session.user_name},function(err, user){
+	db.usermodel.findOne({user_name:req.session.user_name},function(err, user){
 		if(err||!user){
 			res.status(404).send({result:false,error:"Error reading database."})
 			return

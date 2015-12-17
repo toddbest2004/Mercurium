@@ -5,7 +5,7 @@ var db = require('./../mongoose')
 
 router.post("/login", function(req,res){
 	// fetch user and test password verification
-	db.user.findOne({ user_name: req.body.user_name }, function(err, user) {
+	db.usermodel.findOne({ user_name: req.body.user_name }, function(err, user) {
 	    if (err||!user) {
 	    	res.status(404).send({result:false,error:"Username/password not found."})
 	    	return
@@ -25,7 +25,7 @@ router.post("/register", function(req,res){
 		res.status(401).send({result:false,error:"Passwords do not match."})
 		return
 	}
-	db.user.findOne({user_name:req.body.user_name}, function(err, user){
+	db.usermodel.findOne({user_name:req.body.user_name}, function(err, user){
 		if(err){
 			res.status(401).send({result:false,error:err})
 			return
@@ -34,7 +34,7 @@ router.post("/register", function(req,res){
 			res.status(401).send({result:false,error:"A user with that name already exists."})
 			return
 		}
-		newuser = new db.user({user_name:req.body.user_name, password:req.body.password1})
+		newuser = new db.usermodel({user_name:req.body.user_name, password:req.body.password1})
 		newuser.save()
 		req.session.user_name=req.body.user_name
 		res.send({result:true})
@@ -45,7 +45,7 @@ router.get("/games/", function(req,res){
 		res.status(404).send({result:false, error:"You are not logged in."})
 		return
 	}
-	db.user.findOne({user_name:req.session.user_name}).populate('games').exec(function(err, user){
+	db.usermodel.findOne({user_name:req.session.user_name}).populate('games').exec(function(err, user){
 		// db.game.find({}, function(err, games){
 		// 	user.games=games
 		// 	user.save()
