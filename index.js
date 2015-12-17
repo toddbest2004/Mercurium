@@ -23,10 +23,13 @@ app.get('/*', function(req,res){
 	res.sendFile(path.join(__dirname, 'public/index.html'))
 })
 
-var port = process.env.PORT || 3000
-var serverip = process.env.IP || "localhost"
+// var port = process.env.PORT || 3000
+// var serverip = process.env.IP || "localhost"
 
-console.log(port, serverip)
+// console.log(port, serverip)
 
-app.listen(port, serverip)
-console.log('Server running at '+serverip+":"+port)
+app.set('port', (process.env.PORT || 3000));
+
+app.listen(app.get('port'), function() {
+  console.log('Node app is running on port', app.get('port'));
+});
