@@ -26,7 +26,7 @@ db.once('open', function(){
 //     var model = require(path.join(__dirname, file));
 //     db[model.modelName] = model;
 //   });
-db.user = require('./user')
+// db.user = require('./user')
 db.game = require('./game')
 
 module.exports = db;
