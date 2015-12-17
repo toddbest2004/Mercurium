@@ -16,15 +16,17 @@ db.once('open', function(){
 	console.log('open')	
 })
 
-fs
-  .readdirSync(__dirname)
-  .filter(function(file) {
-    return (file.indexOf('.') !== 0) && (file !== basename);
-  })
-  .forEach(function(file) {
-    if (file.slice(-3) !== '.js') return;
-    var model = require(path.join(__dirname, file));
-    db[model.modelName] = model;
-  });
+// fs
+//   .readdirSync(__dirname)
+//   .filter(function(file) {
+//     return (file.indexOf('.') !== 0) && (file !== basename);
+//   })
+//   .forEach(function(file) {
+//     if (file.slice(-3) !== '.js') return;
+//     var model = require(path.join(__dirname, file));
+//     db[model.modelName] = model;
+//   });
+db.user = require('./user')
+db.game = require('./game')
 
 module.exports = db;
