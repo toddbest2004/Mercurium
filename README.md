@@ -1,4 +1,6 @@
 # Mercurium
+Playable at: http://mercurium.herokuapp.com
+
 Images:
 Character Sprites: http://palinor.deviantart.com/art/RPG-Maker-VX-sprite-dump-2-227419486
 Footsteps Icon: https://commons.wikimedia.org/wiki/File:Footsteps_icon.svg
