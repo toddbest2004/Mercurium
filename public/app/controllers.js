@@ -207,7 +207,7 @@ angular.module('GameCtrls', [])
         $location.path("/profile")
       }
     }, function error(res) {
-      alert(res.data.error)
+      // alert(res.data.error)
     });
   }
   $scope.register = function(){
@@ -268,7 +268,7 @@ angular.module('GameCtrls', [])
     });
   }
   $scope.createGame = function(){
-    alert("test")
+    // alert("test")
     var req = {
       url: "/game/create",
       method: 'POST',

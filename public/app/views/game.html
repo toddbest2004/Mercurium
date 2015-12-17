@@ -4,9 +4,9 @@
 	<rect width="100%" height="100%" fill="black"></rect>
 	<image xlink:href="{{getImage(tile)}}" x="{{getTileX(tile)}}" y="{{getTileY(tile)}}" height="100px" width="100px" ng-repeat="tile in newGameState.map" ng-if="tile.x&&tile.y" ng-click="click(tile)" ng-mouseenter="hoverIn(tile)" ng-mouseleave="hoverOut(tile)" ng-right-click="rightClick(tile)"></image>
 
-	<image xlink:href="{{getCharacterImage(character)}}" x="{{getTileX(character.location)}}" y="{{getTileY(character.location)}}" height="100px" width="100px" ng-repeat="character in newGameState.characters" ng-if="character._id!=currentCharacter._id" pointer-events="none"></image>
+	<image xlink:href="{{getCharacterImage(character)}}" x="{{getTileX(character.location)+18}}" y="{{getTileY(character.location)+18}}" height="64px" width="64px" ng-repeat="character in newGameState.characters" ng-if="character._id!=currentCharacter._id" pointer-events="none"></image>
 
-	<image xlink:href="{{getCharacterImage(currentCharacter)}}" x="{{getTileX(currentCharacter.location)}}" y="{{getTileY(currentCharacter.location)}}" height="100px" width="100px" ng-model="currentCharacter" pointer-events="none"></image>
+	<image xlink:href="{{getCharacterImage(currentCharacter)}}" x="{{getTileX(currentCharacter.location)+18}}" y="{{getTileY(currentCharacter.location)+18}}" height="64px" width="64px" ng-model="currentCharacter" pointer-events="none"></image>
 
 	<image xlink:href="images/highlight.png" x="{{getTileX(tile)}}" y="{{getTileY(tile)}}" height="100px" width="100px" ng-repeat="tile in newGameState.map" ng-if="tile.x&&tile.y&&tile.highlighted" pointer-events="none"></image>
 	
